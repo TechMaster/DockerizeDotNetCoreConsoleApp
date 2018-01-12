@@ -1,8 +1,15 @@
 # Huớng dẫn đóng gói một ứng dụng dot net core
-
+## Thử ngay mã nguồn
+```sh
+git clone https://github.com/TechMaster/DockerizeDotNetCoreConsoleApp.git
+cd DockerizeDotNetCoreConsoleApp
+docker build -t helloworld .
+docker images | grep helloworld 
+docker run --rm helloworld
+```
 ## Bước 1: Tạo ứng dụng dotnetcore
 
-```
+```sh
 dotnet new console -n HelloWorld -o abcxyz
 cd abcxyz
 dotnet build
@@ -56,14 +63,14 @@ RUN dotnet publish -c Release -o out --no-restore
 # --no-restore ở trên đã gọi lệnh dotnet restore rồi, nên ở lệnh này không cần restore nữa
 ```
 Chạy lệnh *docker build -t helloworld .* sẽ tạo ra image có kích thước lớn, chứa dotnetcore SDK và toàn bộ source code của dự án.
-```
+```sh
 docker run --name helloapp -it helloworld:latest
 dotnet --info
 cd /app/out
 dotnet HelloWorld.dll
 ```
 ### Thử nghiệm với Dockerfile chỉ dừng ở dotnet publish, chưa copy kết quả vào dotnetcore runtime
-```
+```Dockerfile
 FROM microsoft/dotnet:2.0-sdk AS build-env
 WORKDIR /app
 
@@ -86,7 +93,7 @@ COPY --from=build-env /app/out ./                # Copy kết quả biên dịch
 ENTRYPOINT ["dotnet", "HelloWorld.dll"]          # chạy lệnh dotnet HelloWorld.dll
 ```
 ## Bước 5: Đóng gói vào Docker image và chạy thử
-```
+```sh
 docker build -t helloworld .
 docker images | grep helloworld 
 docker run --rm helloworld
